@@ -4,7 +4,7 @@
  * 弹出层组件.
  *
  * @author Nierui <nierui@creatorblue.com>
- * @version 1.1
+ * @version 1.1.1
  * @since 1.0
  */
 
@@ -68,7 +68,7 @@ class popupsLayer {
      *
      * @param {Function} [after = null] - 指定生成弹出层后需要进行的操作.
      *
-     * @version 1.1
+     * @version 1.1.1
      * @since 1.0
      */
     constructor({layer, title, content, after = null}) {
@@ -115,7 +115,13 @@ class popupsLayer {
         if (this.config.title.enable)
             this.createTitle();
         this.createContent();
-        document.body.insertBefore(this.popupsLayer, document.body.firstChild);
+        if (document.querySelectorAll('.popups-layer').length) {
+            let oldLayer = document.querySelectorAll('.popups-layer');
+            let targetEle = oldLayer[oldLayer.length - 1].nextElementSibling;
+            document.body.insertBefore(this.popupsLayer, targetEle);
+        }else {
+            document.body.insertBefore(this.popupsLayer, document.body.firstElementChild);
+        }
         if (after instanceof Function) {
             after();
         }
@@ -217,7 +223,7 @@ class popupsLayer {
     }
 
     /**
-     * @todo
+     * @todo 拖动
      */
     dragstart(e) {
         e.preventDefault();

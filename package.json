@@ -1,6 +1,6 @@
 {
   "name": "popups-layer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "一个开发中的弹出层框架",
   "main": "js/popupsLayer.js",
   "directories": {
@@ -8,7 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc-base": "jsdoc js/base.js -d doc/base",
     "doc-layer": "jsdoc js/popupsLayer.js -d doc/popupsLayer"
   },
   "repository": {
