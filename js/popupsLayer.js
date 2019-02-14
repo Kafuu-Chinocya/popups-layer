@@ -3,8 +3,8 @@
 /**
  * 弹出层组件.
  *
- * @author Kafuu_Chino
- * @version 1.0
+ * @author Nierui <nierui@creatorblue.com>
+ * @version 1.1
  * @since 1.0
  */
 
@@ -66,10 +66,12 @@ class popupsLayer {
      * @param {String} [content.style.color = #666666] - 内容区域字体颜色.
      * @param {String} [content.style.fontSize = 14px] - 内容区域字体大小
      *
-     * @version 1.0
+     * @param {Function} [after = null] - 指定生成弹出层后需要进行的操作.
+     *
+     * @version 1.1
      * @since 1.0
      */
-    constructor({layer, title, content}) {
+    constructor({layer, title, content, after = null}) {
         // 配置文件
         const DEFAULT_CONFIG = {
             layer: {
@@ -114,6 +116,9 @@ class popupsLayer {
             this.createTitle();
         this.createContent();
         document.body.insertBefore(this.popupsLayer, document.body.firstChild);
+        if (after instanceof Function) {
+            after();
+        }
     }
 
     createLayer() {
@@ -211,11 +216,15 @@ class popupsLayer {
         this.layer.appendChild(content);
     }
 
+    /**
+     * @todo
+     */
     dragstart(e) {
         e.preventDefault();
     }
 
     close() {
+        this.config = null;
         document.body.removeChild(this.popupsLayer);
     }
 }
