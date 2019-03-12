@@ -118,7 +118,7 @@ class PopupsLayer {
             let oldLayer = document.querySelectorAll('.popups-layer');
             let targetEle = oldLayer[oldLayer.length - 1].nextElementSibling;
             document.body.insertBefore(this.popupsLayer, targetEle);
-        }else {
+        } else {
             document.body.insertBefore(this.popupsLayer, document.body.firstElementChild);
         }
         if (after instanceof Function) {
@@ -154,11 +154,31 @@ class PopupsLayer {
         if (_CONFIG_.text)
             title.innerText = _CONFIG_.text;
         if (_CONFIG_.template) {
-            let temp = title.innerHTML;
-            title.innerHTML = temp + _CONFIG_.template;
+            title.innerHTML += _CONFIG_.template;
         }
         if (_CONFIG_.btnGroup.enable) {
-            // todo
+            let that = this;
+            let btnGroup = document.createElement('div');
+            btnGroup.classList.add('popups-layer-btn-group');
+            const logic = {
+                close() {
+                    let icon = document.createElement('i');
+                    icon.classList.add('iconfont');
+                    icon.classList.add('icon-guanbi');
+                    btnGroup.appendChild(icon);
+                    icon.addEventListener('click', () => {
+                        that.close();
+                    });
+                }
+            };
+            for (let [key, value] of Object.entries(_CONFIG_.btnGroup)) {
+                if (Object.is(key, 'enable'))
+                    continue;
+                if (value) {
+                    logic[key]();
+                }
+            }
+            title.appendChild(btnGroup);
         }
         for (let [key, value] of Object.entries(_CONFIG_.style)) {
             // 绑定函数
