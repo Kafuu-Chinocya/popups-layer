@@ -7,23 +7,13 @@
     <link rel="stylesheet" href="css/popups-layer.css">
 </head>
 <body>
-<div class="popups-layer">
-    <div class="popups-layer-box"
-         style="top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgb(255, 255, 255); border-radius: 5px; max-width: none;">
-        <div class="popups-layer-title"
-             style="color: rgb(102, 102, 102); font-size: 14px; border-bottom: 0.4px solid rgba(75, 97, 124, 0.53); cursor: all-scroll;">
-            提示
-        </div>
-        <div class="popups-layer-content" style="color: rgb(102, 102, 102); font-size: 14px;">
-            <div class="popups-layer-text">
-                <p>你确定要删除这条数据吗？</p>
-            </div>
-            <div class="btn-box">
-                <button class="btn ok" id="ok">确定</button>
-                <button class="btn cancel" id="cancel">取消</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>
+<script src="lib/popupsLayer.min.js"></script>
+<script>
+    let layer = new PopupsLayer({
+        title: {
+            text: 'This is a PopupsLayer'
+        }
+    });
+</script>

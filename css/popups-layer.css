@@ -1,3 +1,32 @@
+/*font*/
+@font-face {
+    font-family: "iconfont";
+    src: url('../fonts/iconfont.eot'); /* IE9 */
+    src: url('../fonts/iconfont.eot') format('embedded-opentype'), /* IE6-IE8 */ url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAOkAAsAAAAAB7AAAANYAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDHAqCbII5ATYCJAMQCwoABCAFhG0HRhupBsieA+5mZiNPZn6M9ko7CKrN73uAZHnurKpEgBAvQtZET6J2M/9+c7mlFrQRB7eIY0/4qBnn9QBBfL7/OWa6KoH8z/fmFlXU9TwScGDTgUXHFeDxHcgB+T3GBmq3ux4CSKeaZoh+A4aNQ0XB7CYAEbZMD2pGi9KQLlARuCvGKoituFClddIzYEvw++In2ggVJFwyZt9R099Pr6/9rV9emgrTPAS86cwAPwlkoBmggAhUWr3kKNAMmXS1sUIHQEVFgqlqxn3rT6UI/yhS1ZIy9B9PAuHGTM0EoB0GZfi2tsNNZONQjUCZH1OQAD6ITuWJkoJgOSalkr0lBFKdQqW0dMHpJruv1TvRyG+canLsSuGZ5vsajz/ZOPtV406Unnjd9XjFnD3TTt178aR0576i9+N3FR29L4p3F7+ZmkeuOW7C7v3rTzA5JzOyNpxedio9feIeL2r9xInjl55EdckUgTVz/YmlR4syxu38Xp3+fDpz49cFFaMKateprKrbukevby5s+yP373/amYF+/6+97WnK3f88sP/XqMv8raxsQeXidf6AqZ96tzde54i1rj8DN+6Pc9v3R2Lm7+VkicrsvOxGmZST+dUvv8wtFaULmvzxhzSLMpBINYSGWcScB5evLc0rJQ4gdRyTKwHkG+ISgJyQfvlBf0OkQ6dm5nT7R6UA8OlsXV/gSJ0M475lXmfe7+B1LFE0galTFEXocHW7QofBXSQgnXTgJ0Qgn6+nkBd1TgWBSlECErWoAhmVekgF2wxcZNAO3Kj0hHSaMnByBgXYZISSBjRhFYAgl/Mgkc19kMnlOVLBfgUuivkF3OQKGdKZUAVzZtBAWOl9bd3j6H7NO0+zfLGoYRuc9DB9jG4mwx47LQioE3Q7Ybm11i1a5cMD9ahuTzEgMdts4ziGZtixiDYANtPD4ZgWt2NB3ee0CDhOvEvLlkbVi1r4YhHS6cum83Do/DS85tGw+MREGV51R3rh58fQmZLCPOyGjCr7BDpbglW/Rmta0KoDcqA02injVi5JmM3UBofDoGGwxURoDACzLmwFYjTi1a2CdD6OFgQG+OK60JJUMrpKWywvj7xADp+D+RxFSEIWinDhNpOeqNeqFbGiViQZSWs+P2n5PYGkBwA=') format('woff2'),
+    url('../fonts/iconfont.woff') format('woff'),
+    url('../fonts/iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */ url('../fonts/iconfont.svg') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-guanbi:before {
+    content: "\e654";
+}
+
+.icon-minimum:before {
+    content: "\e664";
+}
+
+.icon--zuidahua:before {
+    content: "\e621";
+}
+
 /*弹出层*/
 .popups-layer {
     position: fixed;
@@ -103,11 +132,13 @@
     transition: all .3s;
     -webkit-transition: all .3s;
 }
+
 .btn:hover {
     opacity: .8;
     filter: alpha(opacity=80);
     color: #fff;
 }
+
 .popups-layer > .popups-layer-box > .popups-layer-content > .btn-box > .btn:not(:last-child) {
     margin-right: 5px;
 }

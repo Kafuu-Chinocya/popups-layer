@@ -9,12 +9,11 @@
  */
 
 /**
- * 弹出层，这是一个实验性的功能，依赖于popups-layer.css样式表，小部分图标依赖bootstrap.
- * @todo 移除依赖
+ * 弹出层，这是一个实验性的功能.
  * @class
  */
 
-class popupsLayer {
+class PopupsLayer {
     /**
      * 配置并生成弹出层父元素.
      * @constructor
@@ -159,12 +158,13 @@ class popupsLayer {
             title.innerHTML = temp + _CONFIG_.template;
         }
         if (_CONFIG_.btnGroup.enable) {
-            for (let [key, value] of Object.entries(_CONFIG_.style)) {
-                // 绑定函数
-                if (value) {
-                    let i = document.createElement('i');
-                    i.classList.add(key);
-                }
+            // todo
+        }
+        for (let [key, value] of Object.entries(_CONFIG_.style)) {
+            // 绑定函数
+            if (value) {
+                let i = document.createElement('i');
+                i.classList.add(key);
             }
         }
         if (_CONFIG_.draggable) {
