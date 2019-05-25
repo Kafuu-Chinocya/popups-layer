@@ -3,14 +3,14 @@
 /**
  * 弹出层组件.
  *
- * @author Nierui <nierui@creatorblue.com>
- * @version 1.1.1
- * @since 1.0
+ * @author Kafuu_Chino <japan_sakurayuki@qq.com>
+ * @version 1.1.2
  */
 
 /**
- * 弹出层，这是一个实验性的功能.
+ * 弹出层对象
  * @class
+ * @since 1.0
  */
 
 class PopupsLayer {
@@ -67,190 +67,270 @@ class PopupsLayer {
      *
      * @param {Function} [after = null] - 指定生成弹出层后需要进行的操作.
      *
-     * @version 1.1.1
      * @since 1.0
      */
     constructor({layer, title, content, after = null}) {
-        // 配置文件
-        const DEFAULT_CONFIG = {
-            layer: {
-                position: 'CENTER',
-                style: {
-                    background: '#ffffff',
-                    borderRadius: '5px',
-                    maxWidth: 'none'
+        /**
+         * 创建UI对象
+         * @class
+         * @since 1.1.2
+         */
+        class UI {
+            constructor({layer, title, content, after = null}) {
+                // 配置文件
+                const DEFAULT_CONFIG = {
+                    layer: {
+                        position: 'CENTER',
+                        style: {
+                            background: '#ffffff',
+                            borderRadius: '5px',
+                            maxWidth: 'none'
+                        }
+                    },
+                    title: {
+                        enable: true,
+                        draggable: true,
+                        btnGroup: {
+                            enable: true,
+                            close: true
+                        },
+                        style: {
+                            color: '#666666',
+                            fontSize: '14px',
+                            borderBottom: '.4px solid rgba(75, 97, 124, 0.53)'
+                        }
+                    },
+                    content: {
+                        style: {
+                            color: '#666666',
+                            fontSize: '14px'
+                        }
+                    }
+                };
+                this.config = UI.objectDeepCopy(DEFAULT_CONFIG, {layer, title, content});
+                this.popupsLayer = document.createElement('div');
+                this.popupsLayer.classList.add('popups-layer');
+
+                this.createLayer();
+                if (this.config.title.enable)
+                    this.createTitle();
+                this.createContent();
+
+                if (document.querySelectorAll('.popups-layer').length) {
+                    let oldLayer = document.querySelectorAll('.popups-layer');
+                    let targetEle = oldLayer[oldLayer.length - 1].nextElementSibling;
+                    document.body.insertBefore(this.popupsLayer, targetEle);
+                } else {
+                    document.body.insertBefore(this.popupsLayer, document.body.firstElementChild);
                 }
-            },
-            title: {
-                enable: true,
-                draggable: true,
-                btnGroup: {
-                    enable: true,
-                    close: true
-                },
-                style: {
-                    color: '#666666',
-                    fontSize: '14px',
-                    borderBottom: '.4px solid rgba(75, 97, 124, 0.53)'
-                }
-            },
-            content: {
-                style: {
-                    color: '#666666',
-                    fontSize: '14px'
-                }
+
+                if (after instanceof Function)
+                    after();
             }
-        };
 
-        this.config = {};
-        this.config.layer = Object.assign(DEFAULT_CONFIG.layer, layer);
-        this.config.title = Object.assign(DEFAULT_CONFIG.title, title);
-        this.config.content = Object.assign(DEFAULT_CONFIG.content, content);
-
-        this.popupsLayer = document.createElement('div');
-        this.popupsLayer.classList.add('popups-layer');
-
-        this.createLayer();
-        if (this.config.title.enable)
-            this.createTitle();
-        this.createContent();
-        if (document.querySelectorAll('.popups-layer').length) {
-            let oldLayer = document.querySelectorAll('.popups-layer');
-            let targetEle = oldLayer[oldLayer.length - 1].nextElementSibling;
-            document.body.insertBefore(this.popupsLayer, targetEle);
-        } else {
-            document.body.insertBefore(this.popupsLayer, document.body.firstElementChild);
-        }
-        if (after instanceof Function) {
-            after();
-        }
-    }
-
-    createLayer() {
-        const _CONFIG_ = this.config.layer;
-        const _POSITION_ = {
-            'LEFT': 'left: 0',
-            'RIGHT': 'right: 0',
-            'BOTTOM': 'bottom: 0',
-            'CENTER': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
-        };
-
-        this.layer = document.createElement('div');
-        this.layer.classList.add('popups-layer-box');
-        this.layer.setAttribute('style', `${_POSITION_[_CONFIG_.position]}`);
-        for (let [key, value] of Object.entries(_CONFIG_.style)) {
-            this.layer.style[key] = value;
-        }
-        this.popupsLayer.appendChild(this.layer);
-    }
-
-    createTitle() {
-        const _CONFIG_ = this.config.title;
-        let title = document.createElement('div');
-        title.classList.add('popups-layer-title');
-        for (let [key, value] of Object.entries(_CONFIG_.style)) {
-            title.style[key] = value;
-        }
-        if (_CONFIG_.text)
-            title.innerText = _CONFIG_.text;
-        if (_CONFIG_.template) {
-            title.innerHTML += _CONFIG_.template;
-        }
-        if (_CONFIG_.btnGroup.enable) {
-            let that = this;
-            let btnGroup = document.createElement('div');
-            btnGroup.classList.add('popups-layer-btn-group');
-            const logic = {
-                close() {
-                    let icon = document.createElement('i');
-                    icon.classList.add('iconfont');
-                    icon.classList.add('icon-guanbi');
-                    btnGroup.appendChild(icon);
-                    icon.addEventListener('click', () => {
-                        that.close();
-                    });
+            /**
+             * 深拷贝/合并方法，如果在retObj中存在obj中相同属性，则retObj属性保留，此方法会直接在retObj上进行操作
+             * @param {Object} obj - 进行深拷贝/合并的参考对象.
+             * @param {Object} [retObj = {}] - 进行深拷贝/合并的处理对象，未指定参数将会生成一个空对象.
+             * @return {Object} retObj - 返回深拷贝/合并后的处理对象.
+             * @since 1.1.2
+             */
+            static objectDeepCopy(obj, retObj = {}) {
+                let keys = Object.keys(obj);
+                if (keys.length) {
+                    for (let i = 0; i < keys.length; i++) {
+                        if (!retObj.hasOwnProperty(keys[i]))
+                            retObj[keys[i]] = {};
+                        if (Object.prototype.toString.call(obj[keys[i]]) === '[object Object]')
+                            this.objectDeepCopy(obj[keys[i]], retObj[keys[i]]);
+                        if (retObj[keys[i]] === '' || JSON.stringify(retObj[keys[i]]) !== '{}')
+                            continue;
+                        retObj[keys[i]] = obj[keys[i]];
+                    }
                 }
-            };
-            for (let [key, value] of Object.entries(_CONFIG_.btnGroup)) {
-                if (Object.is(key, 'enable'))
-                    continue;
-                if (value) {
-                    logic[key]();
-                }
+                return retObj;
             }
-            title.appendChild(btnGroup);
-        }
-        for (let [key, value] of Object.entries(_CONFIG_.style)) {
-            // 绑定函数
-            if (value) {
-                let i = document.createElement('i');
-                i.classList.add(key);
-            }
-        }
-        if (_CONFIG_.draggable) {
-            title.style.cursor = 'all-scroll';
-            // title.setAttribute('draggable', true);
-        }
-        this.layer.appendChild(title);
-    }
 
-    createContent() {
-        const _CONFIG_ = this.config.content;
-        let content = document.createElement('div');
-        content.classList.add('popups-layer-content');
-        for (let [key, value] of Object.entries(_CONFIG_.style)) {
-            content.style[key] = value;
-        }
-        let textBox = document.createElement('div');
-        textBox.classList.add('popups-layer-text');
-        if (_CONFIG_.icon) {
-            let img = document.createElement('img');
-            img.src = _CONFIG_.icon.src;
-            img.style.cssFloat = _CONFIG_.icon.position.toLowerCase();
-            textBox.appendChild(img);
-        }
-        if (_CONFIG_.text) {
-            let p = document.createElement('p');
-            p.innerText = _CONFIG_.text;
-            textBox.appendChild(p);
-        }
-        if (_CONFIG_.template) {
-            let temp = textBox.innerHTML;
-            textBox.innerHTML = temp + _CONFIG_.template;
-        }
-        content.appendChild(textBox);
-        if (_CONFIG_.btnGroup) {
-            let btnGroup = document.createElement('div');
-            btnGroup.classList.add('btn-box');
-            for (let [key, value] of Object.entries(_CONFIG_.btnGroup)) {
-                let btn = document.createElement('button');
-                btn.classList.add('btn');
-                btn.setAttribute('id', key);
-                if (value.text) {
-                    btn.innerText = value.text;
+            /**
+             * 创建弹出层外层盒子
+             * @since 1.0
+             */
+            createLayer() {
+                const _CONFIG_ = this.config.layer;
+                const _POSITION_ = {
+                    'LEFT': 'left: 0',
+                    'RIGHT': 'right: 0',
+                    'BOTTOM': 'bottom: 0',
+                    'CENTER': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
+                };
+
+                this.layer = document.createElement('div');
+                this.layer.classList.add('popups-layer-box');
+                this.layer.setAttribute('style', `${_POSITION_[_CONFIG_.position]}`);
+                for (let [key, value] of Object.entries(_CONFIG_.style)) {
+                    this.layer.style[key] = value;
                 }
-                if (value.fn) {
-                    btn.addEventListener('click', value.fn);
-                }
-                if (value.theme) {
-                    btn.classList.add(value.theme);
-                }
-                btnGroup.appendChild(btn);
+                this.popupsLayer.appendChild(this.layer);
             }
-            content.appendChild(btnGroup);
+
+            /**
+             * 创建弹出层标题栏盒子
+             * @since 1.0
+             */
+            createTitle() {
+                const _CONFIG_ = this.config.title;
+                const title = document.createElement('div');
+                title.classList.add('popups-layer-title');
+                for (let [key, value] of Object.entries(_CONFIG_.style)) {
+                    title.style[key] = value;
+                }
+                if (_CONFIG_.hasOwnProperty('text'))
+                    title.innerText = _CONFIG_.text;
+                if (_CONFIG_.hasOwnProperty('template')) {
+                    title.innerHTML += _CONFIG_.template;
+                }
+                if (_CONFIG_.btnGroup.enable) {
+                    const that = this;
+                    const btnGroup = document.createElement('div');
+                    btnGroup.classList.add('popups-layer-btn-group');
+                    const logic = {
+                        close() {
+                            const icon = document.createElement('i');
+                            icon.classList.add('iconfont');
+                            icon.classList.add('icon-guanbi');
+                            btnGroup.appendChild(icon);
+                            icon.addEventListener('click', () => {
+                                that.close();
+                            });
+                        }
+                    };
+                    for (let [key, value] of Object.entries(_CONFIG_.btnGroup)) {
+                        if (Object.is(key, 'enable'))
+                            continue;
+                        if (value) {
+                            logic[key]();
+                        }
+                    }
+                    title.appendChild(btnGroup);
+                }
+                for (let [key, value] of Object.entries(_CONFIG_.style)) {
+                    // 绑定函数
+                    if (value) {
+                        const i = document.createElement('i');
+                        i.classList.add(key);
+                    }
+                }
+                if (_CONFIG_.draggable)
+                    this.dragLayer(title);
+                this.layer.appendChild(title);
+            }
+
+            /**
+             * 创建弹出层内容区盒子
+             * @version 1.0
+             * @since 1.0
+             */
+            createContent() {
+                const _CONFIG_ = this.config.content;
+                const content = document.createElement('div');
+                content.classList.add('popups-layer-content');
+                for (let [key, value] of Object.entries(_CONFIG_.style)) {
+                    content.style[key] = value;
+                }
+                const textBox = document.createElement('div');
+                textBox.classList.add('popups-layer-text');
+                if (_CONFIG_.hasOwnProperty('icon')) {
+                    const img = document.createElement('img');
+                    img.src = _CONFIG_.icon.src;
+                    img.style.cssFloat = _CONFIG_.icon.position.toLowerCase();
+                    textBox.appendChild(img);
+                }
+                if (_CONFIG_.hasOwnProperty('text')) {
+                    const p = document.createElement('p');
+                    p.innerText = _CONFIG_.text;
+                    textBox.appendChild(p);
+                }
+                if (_CONFIG_.hasOwnProperty('template')) {
+                    let temp = textBox.innerHTML;
+                    textBox.innerHTML = temp + _CONFIG_.template;
+                }
+                content.appendChild(textBox);
+                if (_CONFIG_.hasOwnProperty('btnGroup')) {
+                    const btnGroup = document.createElement('div');
+                    btnGroup.classList.add('btn-box');
+                    for (let [key, value] of Object.entries(_CONFIG_.btnGroup)) {
+                        const btn = document.createElement('button');
+                        btn.classList.add('btn');
+                        btn.setAttribute('id', key);
+                        if (value.text) {
+                            btn.innerText = value.text;
+                        }
+                        if (value.fn) {
+                            btn.addEventListener('click', value.fn);
+                        }
+                        if (value.theme) {
+                            btn.classList.add(value.theme);
+                        }
+                        btnGroup.appendChild(btn);
+                    }
+                    content.appendChild(btnGroup);
+                }
+                this.layer.appendChild(content);
+            }
+
+            /**
+             * 拖动窗口方法
+             * @param {HTMLElement} title - 标题元素
+             * @version 1.0
+             * @since 1.0
+             */
+            dragLayer(title) {
+                let isDrag = false;
+                title.style.cursor = 'all-scroll';
+                title.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    isDrag = true;
+                });
+                this.popupsLayer.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    isDrag = false;
+                });
+                this.popupsLayer.addEventListener('mousemove', (e) => {
+                    e.preventDefault();
+                    if (isDrag) {
+                        this.layer.style.left = `${this.layer.offsetLeft + e.movementX}px`;
+                        this.layer.style.top = `${this.layer.offsetTop + e.movementY}px`;
+                    }
+                });
+            }
+
+            /**
+             * 关闭弹出层方法
+             * @todo 允许关闭过渡动画
+             * @since 1.0
+             */
+            close() {
+                document.body.removeChild(this.popupsLayer);
+            }
         }
-        this.layer.appendChild(content);
+
+        this._ui = new UI({layer, title, content, after});
     }
 
     /**
-     * @todo 拖动
+     * 关闭弹出层方法
+     * @todo 允许关闭过渡动画
+     * @since 1.0
      */
-    dragstart(e) {
-        e.preventDefault();
+    close() {
+        this._ui.close();
     }
 
-    close() {
-        this.config = null;
-        document.body.removeChild(this.popupsLayer);
+    /**
+     * 销毁UI对象
+     * @since 1.1.2
+     */
+    destroy() {
+        this._ui = null;
     }
 }
