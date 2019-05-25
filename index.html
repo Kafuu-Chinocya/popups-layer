@@ -3,31 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/popups-layer.css">
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        body > button {
+            width: 80px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
 <body>
-<!--<div class="popups-layer">
-    <div class="popups-layer-box"
-         style="top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgb(255, 255, 255); border-radius: 5px; max-width: none;">
-        <div class="popups-layer-title"
-             style="color: rgb(102, 102, 102); font-size: 14px; border-bottom: 0.4px solid rgba(75, 97, 124, 0.53); cursor: all-scroll;">
-            This is a PopupsLayer
-        </div>
-        <div class="popups-layer-content" style="color: rgb(102, 102, 102); font-size: 14px;">
-            <div class="popups-layer-text"></div>
-        </div>
-    </div>
-</div>-->
-<button>click</button>
+<button class="btn ok">click me</button>
 </body>
 </html>
-<script src="lib/popupsLayer.min.js"></script>
+<script src="js/popupsLayer.js"></script>
 <script>
+    let layer;
     document.querySelector('button').addEventListener('click', () => {
-        let layer = new PopupsLayer({
+        layer = new PopupsLayer({
+            layer: {
+                position: 'CENTER'
+            },
             title: {
                 text: 'This is a PopupsLayer'
+            },
+            content: {
+                text: 'Hello！',
+                btnGroup: {
+                    ok: {
+                        theme: 'ok',
+                        text: '确定'
+                    },
+                    cancel: {
+                        theme: 'cancel',
+                        text: '取消',
+                        fn: function () {
+                            layer.close();
+                        }
+                    }
+                }
             }
         });
     });
