@@ -1,6 +1,6 @@
 {
   "name": "popups-layer",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "一个开发中的弹出层框架",
   "main": "js/popupsLayer.js",
   "directories": {
