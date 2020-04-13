@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc": "jsdoc js/popupsLayer.js -d doc/popupsLayer"
+    "doc": "jsdoc js/popupsLayer.js -d doc/popupsLayer",
+    "build": "jsdoc js/popupsLayer.js -d doc/popupsLayer && babel js --out-dir lib --source-maps --presets=@babel/preset-env && uglifyjs lib/popupsLayer.js -m -o lib/popupsLayer.min.js  --source-map"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "eslint": "^6.8.0",
+    "jsdoc": "^3.6.4",
     "uglify-js": "^3.8.1"
   },
   "bugs": {
